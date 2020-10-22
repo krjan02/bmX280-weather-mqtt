@@ -26,7 +26,7 @@ struct data_bmp280
 // MQTT
 #define CONFIG_MQTT_HOST "192.168.178.54"
 #define CONFIG_MQTT_PORT 1883 // Usually 1883
-#define CONFIG_MQTT_USER "mqtt"
-#define CONFIG_MQTT_PASS "hamqttsecure123"
+#define CONFIG_MQTT_USER "XX"
+#define CONFIG_MQTT_PASS "XX"
 #define CONFIG_MQTT_CLIENT_ID "esp_temp_balkon" // Must be unique on the MQTT network
 #define CONFIG_MQTT_TOPIC_STATE "home/esp_temp_balkon"
