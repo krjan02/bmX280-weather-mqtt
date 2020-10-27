@@ -1,37 +1,51 @@
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BMP280.h>
-
 #include "global.h"
+
+#ifdef SENSOR_BME280
+#include <Adafruit_BME280.h>
+#endif
+
+#ifdef SENSOR_BMP280 
+#include <Adafruit_BMP280.h>
+#endif
 
 namespace temp_sensor
 {
-    Adafruit_BMP280 bmp;
+    #ifdef SENSOR_BME280
+    Adafruit_BME280 sensor;
+    #elif defined(SENSOR_BMP280) 
+    Adafruit_BMP280 sensor;
+    #endif
 
     void setup()
     {
-        if (!bmp.begin(0x76))
+
+        #ifdef SENSOR_BME280
+        if (!sensor.begin(0x76))
         {
-            Serial.println("[Temp-Sensor] Can't find the BMP280 (maybe you f*cked up the wiring?");
+            Serial.println("[Temp-Sensor] Can't find the BME280 (maybe you f*cked up the wiring?)");
             while (1);
         }
+        #elif defined(SENSOR_BMP280) 
+        if (!sensor.begin(0x76))
+        {
+            Serial.println("[Temp-Sensor] Can't find the BMP280 (maybe you f*cked up the wiring?)");
+            while (1);
+        }
+        #endif
+
         Serial.println("[Temp-Sensor] Sensor successfully attached!");
     }
 
-    data_bmp280 get_data()
+    data_struct get_data()
     {
-        data_bmp280 data = {bmp.readTemperature(),bmp.readPressure()/100};
-        Serial.println("[Temp-Sensor] read -> temp: " + String(data.temp) + " pressure: " + String(data.pressure));
+        #ifdef SENSOR_BME280
+        data_struct data = {sensor.readTemperature(),sensor.readPressure()/100,sensor.readHumidity()};
+        #elif defined(SENSOR_BMP280) 
+        data_struct data = {sensor.readTemperature(),sensor.readPressure()/100};
+        #endif
+
+        Serial.println("temp -> " + String(data.temp));
         return data;
     }
 } // namespace temp_sensor
-
-namespace battery_sensor 
-{
-    float get_voltage() 
-    {
-        int adc_value = analogRead(battery_pin);
-        float voltage = (adc_value * 3.3 ) / (4095);
-        Serial.println("[Battery-Sensor] read -> voltage: " + String(voltage));
-        return voltage;
-    }
-}

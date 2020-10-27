@@ -3,7 +3,31 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 
-//vars
+/*
+Specify your Sensor Type here...
+Please make sure that you have the Adafruit Libary installed for 
+the particular sensor you choose
+
+https://github.com/krjan02/bmX280-weather-mqtt#sensor
+*/
+
+#define SENSOR_BME280
+//#define SENSOR_BMP280
+
+// WiFi
+#define CONFIG_WIFI_HOST "mqtt-weather"
+#define CONFIG_WIFI_SSID "XXX"
+#define CONFIG_WIFI_PASS "XXX"
+
+// MQTT
+#define CONFIG_MQTT_HOST "192.168.XXX.XX"
+#define CONFIG_MQTT_PORT 1883 // Usually 1883
+#define CONFIG_MQTT_USER "XXX"
+#define CONFIG_MQTT_PASS "XXX"
+#define CONFIG_MQTT_CLIENT_ID "esp_temp_room1" // Must be unique on the MQTT network
+#define CONFIG_MQTT_TOPIC_STATE "home/esp_temp_room1" 
+
+/* No changes required (if you are an normal user) */
 extern WiFiClient espClient;
 extern PubSubClient client;
 
@@ -16,17 +40,17 @@ struct data_bmp280
     float pressure;
 };
 
+struct data_bme280
+{
+    float temp;
+    float pressure;
+    float humidity;
+};
+
+#ifdef SENSOR_BME280
+#define data_struct data_bme280
+#elif defined(SENSOR_BMP280) 
+#define data_struct data_bmp280
 #endif
 
-#define battery_pin 32
-// WiFi
-#define CONFIG_WIFI_SSID "1337-TPLINK"
-#define CONFIG_WIFI_PASS "HIDDEN"
-
-// MQTT
-#define CONFIG_MQTT_HOST "192.168.178.54"
-#define CONFIG_MQTT_PORT 1883 // Usually 1883
-#define CONFIG_MQTT_USER "XX"
-#define CONFIG_MQTT_PASS "XX"
-#define CONFIG_MQTT_CLIENT_ID "esp_temp_balkon" // Must be unique on the MQTT network
-#define CONFIG_MQTT_TOPIC_STATE "home/esp_temp_balkon"
+#endif
